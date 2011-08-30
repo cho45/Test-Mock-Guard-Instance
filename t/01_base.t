@@ -13,13 +13,13 @@ use Test::Mock::Guard::Instance qw(mock_guard_instance);
 };
 
 
+my $obj1 = Some::Class->new;
+my $obj2 = Some::Class->new;
 {
-	my $obj1 = Some::Class->new;
 	my $guard1 = mock_guard_instance($obj1, +{ foo => sub { "bar" }, bar => 10 } );
 	is $obj1->foo, "bar";
 	is $obj1->bar, 10;
 
-	my $obj2 = Some::Class->new;
 	my $guard2 = mock_guard_instance($obj2, +{ foo => sub { "baz" }, bar => 20 } );
 	is $obj2->foo, "baz";
 	is $obj2->bar, 20;
@@ -31,6 +31,12 @@ use Test::Mock::Guard::Instance qw(mock_guard_instance);
 	is $another->foo, "foo";
 	is $another->bar, 1;
 }
+
+is $obj1->foo, "foo";
+is $obj1->bar, 1;
+
+is $obj2->foo, "foo";
+is $obj2->bar, 1;
 
 my $outofscope = Some::Class->new;
 is $outofscope->foo, "foo";
