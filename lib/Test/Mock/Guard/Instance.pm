@@ -3,6 +3,7 @@ package Test::Mock::Guard::Instance;
 use strict;
 use warnings;
 use Exporter::Lite;
+use Scalar::Util qw(refaddr);
 use Test::Mock::Guard qw(mock_guard);
 
 our $VERSION = '0.01';
@@ -10,11 +11,12 @@ our @EXPORT_OK = qw(mock_guard_instance mock_guard);
 
 sub mock_guard_instance {
 	my ($object, $methods) = @_;
+	my $refaddr = refaddr $object;
 	my $guard; $guard = mock_guard(ref($object), +{
 		map {
 			my $name = $_;
 			$name => sub {
-				if ($_[0] == $object) {
+				if (refaddr $_[0] == $refaddr) {
 					ref($methods->{$name}) eq 'CODE' ? $methods->{$name}->() : $methods->{$name}
 				} else {
 					$guard->{restore}->{ ref($object) }->{$name}->(@_);
