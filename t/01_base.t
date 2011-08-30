@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Fatal;
 use Test::Name::FromLine;
 use Test::Mock::Guard::Instance qw(mock_guard_instance);
 
@@ -34,5 +35,10 @@ use Test::Mock::Guard::Instance qw(mock_guard_instance);
 my $outofscope = Some::Class->new;
 is $outofscope->foo, "foo";
 is $outofscope->bar, 1;
+
+{
+	my $obj = +{};
+	like exception { mock_guard_instance($obj, +{ foo => sub { "bar" }, bar => 10 } ) }, qr/blessed object required/;
+};
 
 done_testing;

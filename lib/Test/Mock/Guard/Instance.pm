@@ -3,14 +3,17 @@ package Test::Mock::Guard::Instance;
 use strict;
 use warnings;
 use Exporter::Lite;
-use Scalar::Util qw(refaddr);
+use Scalar::Util qw(refaddr blessed);
 use Test::Mock::Guard qw(mock_guard);
+use Carp;
 
 our $VERSION = '0.01';
 our @EXPORT_OK = qw(mock_guard_instance mock_guard);
 
 sub mock_guard_instance {
 	my ($object, $methods) = @_;
+	blessed($object) or croak "blessed object required";
+
 	my $refaddr = refaddr $object;
 	my $guard; $guard = mock_guard(ref($object), +{
 		map {
